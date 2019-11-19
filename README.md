@@ -18,13 +18,6 @@
     [no]  购买商品，并记录
     [no]  可查询购买数据
 
-代码: 
-     
-     
-[login.py](https://github.com/rookiesmile/ShoppingSystem/blob/master/admin/Login.py)
-
-[Register.py](https://github.com/rookiesmile/ShoppingSystem/blob/master/admin/Register.py)
-    
-[sql.py](https://github.com/rookiesmile/ShoppingSystem/blob/master/admin/sql.py)
+[代码](https://github.com/rookiesmile/ShoppingSystem)
 
 未完成!
