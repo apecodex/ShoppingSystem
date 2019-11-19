@@ -13,9 +13,11 @@
 
 已经完成的:
 
-    [ok]  登录、注册(涉及密码加密) 代码[login.py](https://github.com/rookiesmile/ShoppingSystem/blob/master/admin/Register.py)
+    [ok]  登录、注册(涉及密码加密) 
     [ok]  保存数据(sqlite3)
     [no]  购买商品，并记录
     [no]  可查询购买数据
+
+代码: [login.py](https://github.com/rookiesmile/ShoppingSystem/blob/master/admin/Register.py)
 
 未完成!
