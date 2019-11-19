@@ -20,10 +20,11 @@
 
 代码: 
      
-     [login.py](https://github.com/rookiesmile/ShoppingSystem/blob/master/admin/login.py)
+     
+[login.py](https://github.com/rookiesmile/ShoppingSystem/blob/master/admin/login.py)
 
-     [Register.py](https://github.com/rookiesmile/ShoppingSystem/blob/master/admin/Register.py)
+[Register.py](https://github.com/rookiesmile/ShoppingSystem/blob/master/admin/Register.py)
     
-     [sql.py](https://github.com/rookiesmile/ShoppingSystem/blob/master/admin/sql.py)
+[sql.py](https://github.com/rookiesmile/ShoppingSystem/blob/master/admin/sql.py)
 
 未完成!
