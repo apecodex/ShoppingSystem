@@ -21,7 +21,7 @@
 代码: 
      
      
-[login.py](https://github.com/rookiesmile/ShoppingSystem/blob/master/admin/login.py)
+[login.py](https://github.com/rookiesmile/ShoppingSystem/blob/master/admin/Login.py)
 
 [Register.py](https://github.com/rookiesmile/ShoppingSystem/blob/master/admin/Register.py)
     
