@@ -9,10 +9,18 @@ import sqlite3
 import os
 from datetime import datetime
 
+# 获取db的路径
+def get_path():
+    if os.path.abspath(".").split("/")[-1] == "ShoppingSystem":
+        db_file = os.path.abspath(".")+"/admin"
+    else:
+        db_file = os.path.abspath(".")
+    return db_file
+
 def initSql():
-    user_db_connect = sqlite3.connect("db/userdata.db")
-    record_db_connect = sqlite3.connect("db/record.db")
-    commodity_db_connect = sqlite3.connect("db/commodity.db")
+    user_db_connect = sqlite3.connect(get_path()+"/db/userdata.db")
+    record_db_connect = sqlite3.connect(get_path()+"/db/record.db")
+    commodity_db_connect = sqlite3.connect(get_path()+"/db/commodity.db")
     print( "Opened database successfully")
     user_db_cursor = user_db_connect.cursor()
     record_db_cursor = record_db_connect.cursor()
@@ -62,18 +70,20 @@ def initSql():
 class AdminSQL():
 
     def __init__(self):
-        self.user_db_connect = sqlite3.connect("db/userdata.db")
+        self.user_db_connect = sqlite3.connect(get_path()+"/db/userdata.db")
         self.user_db_cursor = self.user_db_connect.cursor()
-        self.record_db_connect = sqlite3.connect("db/record.db")
+        self.record_db_connect = sqlite3.connect(get_path()+"/db/record.db")
         self.record_db_cursor = self.record_db_connect.cursor()
-        self.commodity_db_connect = sqlite3.connect("db/commodity.db")
+        self.commodity_db_connect = sqlite3.connect(get_path()+"/db/commodity.db")
         self.commodity_db_cursor = self.commodity_db_connect.cursor()
 
+    # 获取时间
     def getTime(self):
         dtime = datetime.now().timestamp()
         # date = datetime.fromtimestamp(dtime)
         return dtime
 
+    # 保存注册的信息
     def saveUserDB(self,db):
         username, age, gender, password, mail = db["username"], db["age"], db["gender"], db["password"], db["mail"]
         get_max_id = self.user_db_cursor.execute("SELECT MAX(id) FROM user_data;")
@@ -88,33 +98,50 @@ class AdminSQL():
         self.user_db_connect.commit()
         self.user_db_connect.close()
 
+    # 保存消费记录
     def saveRecordDB(self, record_db):
         into_db = """
             INSERT INTO record_db (username, buy_what, spend, datetime) VALUES ('{}', '{}', {}, '{}')
         """.format(username, buy_what, spend, self.getTime())
 
-    def readAloneUsernameDB(self, username):
-        read_db = """
+    # 查询用户名
+    def searchAloneUsernameDB(self, username):
+        search_db = """
             SELECT username FROM user_data WHERE username="{}"
         """.format(username)
         try:
-            data = [i for i in self.user_db_cursor.execute(read_db)][0]
+            data = [i for i in self.user_db_cursor.execute(search_db)][0]
         except IndexError:
             return None
         return data
 
-    def readAloneMailDB(self, mail):
-        read_db = """
+    # 查询密码
+    def searchAlonePasswordDB(self, username):
+        search_db = """
+            SELECT password FROM user_data WHERE username="{}"
+        """.format(username)
+        try:
+            data = [i for i in self.user_db_cursor.execute(search_db)][0]
+        except IndexError:
+            return None
+        return data[0]
+
+    # 查询邮箱
+    def searchAloneMailDB(self, mail):
+        search_db = """
             SELECT mail FROM user_data WHERE mail="{}" 
         """.format(mail)
         try:
-            data = [i for i in self.user_db_cursor.execute(read_db)][0]
+            data = [i for i in self.user_db_cursor.execute(search_db)][0]
         except IndexError:
             return None
         return data
 
-if os.listdir("db") == []:
-    initSql()
+try:
+    if os.listdir("db") == []:
+        initSql()
+except FileNotFoundError:
+    pass
 
 # a = AdminSQL()
-# a.saveUserDB(s)
+# print(a.searchAloneMailDB("14@qq.com"))
