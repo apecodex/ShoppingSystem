@@ -6,7 +6,6 @@
 # @Software: PyCharm
 
 import hashlib
-import re
 try:
     import sql
 except ModuleNotFoundError:
@@ -34,9 +33,7 @@ class RegisterSystem():
         self.sql = sql.AdminSQL()
 
     def saveUsername(self,):
-        search_username = self.sql.searchAloneUsernameDB(self.username)
-        if search_username == None:
-            self.db['username'] = self.username
+        self.db['username'] = self.username
 
     def saveAge(self):
         self.db['age'] = self.age
@@ -49,9 +46,7 @@ class RegisterSystem():
         self.db["password"] = hashPassword
 
     def saveMail(self):
-        search_mail = self.sql.searchAloneMailDB(self.mail)
-        if search_mail == None:
-            self.db["mail"] = self.mail
+        self.db["mail"] = self.mail
 
     def save(self):
         self.saveUsername()
@@ -64,3 +59,4 @@ class RegisterSystem():
 
 # r = RegisterSystem("aaaeeeq",12,"0","abc123","14730@qq.com")
 # r.save()
+print(HashMd5("aaafff", "abc123").password)

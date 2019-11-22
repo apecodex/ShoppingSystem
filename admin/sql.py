@@ -11,16 +11,23 @@ from datetime import datetime
 
 # 获取db的路径
 def get_path():
-    if os.path.abspath(".").split("/")[-1] == "ShoppingSystem":
-        db_file = os.path.abspath(".")+"/admin"
-    else:
-        db_file = os.path.abspath(".")
-    return db_file
+    if os.name == "posix":   # Linux系统
+        if os.path.abspath(".").split("/")[-1] == "ShoppingSystem":
+            db_file = os.path.abspath(".")+"/admin/db/"
+        else:
+            db_file = os.path.abspath(".")+"/db/"
+        return db_file
+    else:    # windows系统
+        if os.path.abspath(".").split("\\")[-1] == "ShoppingSystem":
+            db_file = os.path.abspath(".")+"\\admin\\db\\"
+        else:
+            db_file = os.path.abspath(".")+"\\db\\"
+        return db_file
 
 def initSql():
-    user_db_connect = sqlite3.connect(get_path()+"/db/userdata.db")
-    record_db_connect = sqlite3.connect(get_path()+"/db/record.db")
-    commodity_db_connect = sqlite3.connect(get_path()+"/db/commodity.db")
+    user_db_connect = sqlite3.connect(get_path()+"userdata.db")
+    record_db_connect = sqlite3.connect(get_path()+"record.db")
+    commodity_db_connect = sqlite3.connect(get_path()+"commodity.db")
     print( "Opened database successfully")
     user_db_cursor = user_db_connect.cursor()
     record_db_cursor = record_db_connect.cursor()
@@ -70,11 +77,11 @@ def initSql():
 class AdminSQL():
 
     def __init__(self):
-        self.user_db_connect = sqlite3.connect(get_path()+"/db/userdata.db")
+        self.user_db_connect = sqlite3.connect(get_path()+"userdata.db")
         self.user_db_cursor = self.user_db_connect.cursor()
-        self.record_db_connect = sqlite3.connect(get_path()+"/db/record.db")
+        self.record_db_connect = sqlite3.connect(get_path()+"record.db")
         self.record_db_cursor = self.record_db_connect.cursor()
-        self.commodity_db_connect = sqlite3.connect(get_path()+"/db/commodity.db")
+        self.commodity_db_connect = sqlite3.connect(get_path()+"commodity.db")
         self.commodity_db_cursor = self.commodity_db_connect.cursor()
 
     # 获取时间
@@ -94,9 +101,9 @@ class AdminSQL():
             INSERT INTO user_data (id, username, age, gender, password, mail, datetime) VALUES ({}, '{}', {}, '{}', '{}', '{}', '{}')
         """.format(max_id+1, username, age, gender,password, mail, self.getTime())
         self.user_db_cursor.execute(into_data)
-        self.user_db_cursor.close()
+        # self.user_db_cursor.close()
         self.user_db_connect.commit()
-        self.user_db_connect.close()
+        # self.user_db_connect.close()
 
     # 保存消费记录
     def saveRecordDB(self, record_db):
@@ -110,7 +117,7 @@ class AdminSQL():
             SELECT username FROM user_data WHERE username="{}"
         """.format(username)
         try:
-            data = [i for i in self.user_db_cursor.execute(search_db)][0]
+            data = [i for i in self.user_db_cursor.execute(search_db)][0][0]
         except IndexError:
             return None
         return data
@@ -132,10 +139,45 @@ class AdminSQL():
             SELECT mail FROM user_data WHERE mail="{}" 
         """.format(mail)
         try:
-            data = [i for i in self.user_db_cursor.execute(search_db)][0]
+            data = [i for i in self.user_db_cursor.execute(search_db)][0][0]
         except IndexError:
             return None
         return data
+
+    def updateUserPasswordDB(self, username, mail, new_password):
+        isdb = """
+            SELECT * FROM user_data WHERE username='{}' and mail='{}'
+        """.format(username, mail)
+        isin = self.user_db_cursor.execute(isdb)
+        if isin == None:
+            return None
+        else:
+            if isin != None:
+                update_db = """
+                    UPDATE user_data SET password = '{}' WHERE mail='{}' and username='{}'
+                """.format(new_password, mail, username)
+                self.user_db_cursor.execute(update_db)
+                # self.user_db_cursor.close()
+                self.user_db_connect.commit()
+                # self.user_db_connect.close()
+
+    def searchFindPassword(self, username, mail):
+        isdb = """
+            SELECT mail FROM user_data WHERE username='{}' and mail='{}'
+        """.format(username, mail)
+        try:
+            data = [i for i in self.user_db_cursor.execute(isdb)][0][0]
+        except IndexError:
+            return None
+        return data
+
+    def close(self):
+        self.user_db_cursor.close()
+        self.record_db_cursor.close()
+        self.commodity_db_cursor.close()
+        self.user_db_connect.close()
+        self.record_db_connect.close()
+        self.commodity_db_connect.close()
 
 try:
     if os.listdir("db") == []:
@@ -144,4 +186,7 @@ except FileNotFoundError:
     pass
 
 # a = AdminSQL()
-# print(a.searchAloneMailDB("14@qq.com"))
+# print(a.searchAloneUsernameDB("apecode"))
+# print(a.searchFindPassword("apecodewx", "147@qq.com"))
+# print(a.searchAloneMailDB("147@qq.com"))
+# print(a.updateUserPasswordDB("abc123", "14@qq.com", " apecode"))
